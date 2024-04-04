@@ -1626,12 +1626,15 @@ function pickers.on_close_prompt(prompt_bufnr)
     picker.finder:close()
   end
 
-  -- so we dont call close_windows multiple times we clear that autocmd
-  vim.api.nvim_clear_autocmds {
-    group = "PickerInsert",
-    event = "BufLeave",
-    buffer = prompt_bufnr,
-  }
+  if vim.api.nvim_buf_is_loaded(prompt_bufnr) then
+    -- so we dont call close_windows multiple times we clear that autocmd
+    vim.api.nvim_clear_autocmds {
+      group = "PickerInsert",
+      event = "BufLeave",
+      buffer = prompt_bufnr,
+    }
+  end
+
   picker.close_windows(status)
 
   vim.o.mousemoveevent = picker.__original_mousemoveevent
